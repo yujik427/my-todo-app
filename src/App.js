@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import './App.css';
 import TodoForm from './components/TodoForm.js';
 import Todo from './components/Todo.js';
+import { saveTodosToStorage, loadTodosFromStorage } from './utils/localStorage.js';
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  // localStorageから初期データを読み込む
+  const [todos, setTodos] = useState(() => loadTodosFromStorage());
+
+  // todosの状態が変更されるたびに自動保存
+  useEffect(() => {
+    saveTodosToStorage(todos);
+  }, [todos]);
 
   const addTodo = (text, date) => {
     const newTodos = [...todos, { text, date, completed: false, id: Date.now() }];
@@ -28,6 +36,7 @@ function App() {
     }
   };
 
+
   // 日付ごとにTodoをグループ化
   const groupedTodos = todos.reduce((groups, todo) => {
     const date = todo.date || '未設定';
@@ -39,12 +48,13 @@ function App() {
   }, {});
 
   return (
-    <div>
-      <h1>React ToDo管理アプリ</h1>
+    <div className="app-container">
+      <h1 className="app-title">Todoアプリ</h1>
       <TodoForm addTodo={addTodo} />
+
       {Object.keys(groupedTodos).sort().map(date => (
-        <div key={date}>
-          <h2>{date}</h2>
+        <div key={date} className="date-section">
+          <h2 className="date-title">{date}</h2>
           <Todo
             todos={groupedTodos[date]}
             date={date}
@@ -57,4 +67,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;【

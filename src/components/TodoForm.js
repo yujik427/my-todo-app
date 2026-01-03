@@ -12,19 +12,23 @@ function TodoForm({ addTodo }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="タスクを入力"
-      />
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-      />
-      <button type="submit">追加</button>
+    <form className="todo-form" onSubmit={handleSubmit}>
+      <div className="form-row">
+        <input
+          type="text"
+          className="todo-input"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="タスクを入力"
+        />
+        <input
+          type="date"
+          className="date-input"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
+      </div>
+      <button type="submit" className="add-btn">追加</button>
     </form>
   );
 }
