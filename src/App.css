@@ -1,38 +1,584 @@
-.App {
-  text-align: center;
+/* モバイルファーストのTodoアプリスタイル */
+
+/* リセットと基本設定 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
+  color: #333;
+  overflow-x: hidden;
+}
+
+/* メインコンテナ */
+.app-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+}
+
+.app-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+  border-radius: 25px 25px 0 0;
+}
+
+/* タイトル */
+.app-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #2d3748;
+  margin-bottom: 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: -0.5px;
+  position: relative;
+}
+
+.app-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 2px;
+}
+
+/* 日付セクション */
+.date-section {
+  margin-bottom: 30px;
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 20px;
+  border-left: 5px solid #667eea;
+}
+
+.date-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.date-title::before {
+  content: "📅";
+  margin-right: 10px;
+}
+
+/* Todoアイテム */
+.todo-item {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 15px;
+  margin-bottom: 12px;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.todo-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #667eea, #764ba2);
+  border-radius: 15px 0 0 15px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.todo-item:hover::before {
+  opacity: 1;
+}
+
+.todo-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.15),
+    0 2px 0 rgba(255, 255, 255, 0.9);
+}
+
+.todo-item.completed {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+.todo-item.completed::before {
+  background: linear-gradient(180deg, #48bb78, #38a169);
+  opacity: 0.6;
+}
+
+.todo-item.completed .todo-text {
+  text-decoration: line-through;
+  color: #718096;
+  font-style: italic;
+}
+
+.todo-checkbox {
+  width: 26px;
+  height: 26px;
+  margin-right: 18px;
+  accent-color: #667eea;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: transform 0.2s ease;
+}
+
+.todo-checkbox:hover {
+  transform: scale(1.1);
+}
+
+.todo-text {
+  flex: 1;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #2d3748;
+  word-break: break-word;
+  line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+.todo-delete-btn {
+  background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.todo-delete-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.todo-delete-btn:hover::before {
+  left: 100%;
+}
+
+.todo-delete-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(229, 62, 62, 0.4);
+}
+
+.todo-delete-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Todoフォーム */
+.todo-form {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  gap: 20px;
+  margin-bottom: 30px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.todo-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+}
+
+
+.export-btn:active, .import-btn:active {
+  transform: translateY(0);
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  align-items: stretch;
+}
+
+.todo-input {
+  flex: 1;
+  padding: 18px 20px;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  border-radius: 15px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  color: #2d3748;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.todo-input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow:
+    0 0 0 3px rgba(102, 126, 234, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.todo-input::placeholder {
+  color: #a0aec0;
+  font-weight: 400;
+}
+
+.date-input {
+  padding: 18px 20px;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  border-radius: 15px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  color: #2d3748;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  min-width: 180px;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow:
+    0 0 0 3px rgba(102, 126, 234, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.add-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 18px 32px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    0 8px 24px rgba(102, 126, 234, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
 }
 
-.App-link {
-  color: #61dafb;
+.add-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
 }
 
-@keyframes App-logo-spin {
+.add-btn:hover::before {
+  left: 100%;
+}
+
+.add-btn:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 12px 32px rgba(102, 126, 234, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.add-btn:active {
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 16px rgba(102, 126, 234, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .app-container {
+    margin: 15px;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow:
+      0 15px 35px rgba(0, 0, 0, 0.15),
+      0 0 0 1px rgba(255, 255, 255, 0.2);
+  }
+
+  .app-title {
+    font-size: 2rem;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+
+  .app-title::after {
+    width: 50px;
+  }
+
+  .todo-form {
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 18px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .todo-input,
+  .date-input {
+    width: 100%;
+    padding: 16px 18px;
+    font-size: 16px; /* iOSのズーム防止 */
+    border-radius: 12px;
+    margin-bottom: 0;
+  }
+
+  .add-btn {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.1rem;
+    border-radius: 12px;
+    margin-top: 5px;
+  }
+
+
+  .date-section {
+    margin-bottom: 20px;
+    padding: 18px;
+    border-radius: 15px;
+  }
+
+  .date-title {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+
+  .todo-item {
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+
+  .todo-text {
+    font-size: 1rem;
+  }
+
+  .todo-delete-btn {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    margin-left: 8px;
+  }
+}
+
+  .date-section {
+    padding: 15px;
+  }
+
+  .date-title {
+    font-size: 1.1rem;
+  }
+
+  .todo-item {
+    padding: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .todo-text {
+    font-size: 0.95rem;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .todo-delete-btn {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+@media (max-width: 480px) {
+  .app-container {
+    margin: 5px;
+    padding: 10px;
+  }
+
+  .app-title {
+    font-size: 1.3rem;
+  }
+
+  .todo-form {
+    padding: 15px;
+  }
+
+  .date-section {
+    padding: 12px;
+  }
+
+  .todo-item {
+    padding: 10px;
+  }
+}
+
+/* アニメーション */
+@keyframes fadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.app-container {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.todo-form {
+  animation: slideIn 0.5s ease-out 0.2s both;
+}
+
+.data-controls {
+  animation: slideIn 0.5s ease-out 0.4s both;
+}
+
+.date-section {
+  animation: fadeIn 0.4s ease-out 0.6s both;
+}
+
+.todo-item {
+  animation: bounceIn 0.5s ease-out both;
+}
+
+.todo-item:nth-child(1) { animation-delay: 0.1s; }
+.todo-item:nth-child(2) { animation-delay: 0.2s; }
+.todo-item:nth-child(3) { animation-delay: 0.3s; }
+.todo-item:nth-child(4) { animation-delay: 0.4s; }
+.todo-item:nth-child(5) { animation-delay: 0.5s; }
+
+/* 完了状態のアニメーション */
+.todo-item.completed .todo-text {
+  transition: all 0.3s ease;
+}
+
+
+/* スクロールバー */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5a67d8;
 }
